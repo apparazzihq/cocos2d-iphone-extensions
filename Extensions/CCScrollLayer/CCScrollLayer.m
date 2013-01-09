@@ -96,7 +96,7 @@ enum
 		
 		// Enable Touches/Mouse.
 #ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
-		self.isTouchEnabled = YES;
+		self.touchEnabled = YES;
 #elif defined(__MAC_OS_X_VERSION_MAX_ALLOWED)
         self.isMouseEnabled = YES;
 #endif
@@ -178,7 +178,7 @@ enum
 		
 		// Set GL Values
 #if COCOS2D_VERSION >= 0x00020000
-        ccGLEnable(CC_GL_BLEND);
+//        ccGLEnable(CC_GL_BLEND);
         ccPointSize( 6.0 * CC_CONTENT_SCALE_FACTOR() );
 #define DRAW_4B_FUNC ccDrawColor4B
         
@@ -259,7 +259,14 @@ enum
 
 - (CGPoint) positionForPageWithNumber: (int) pageNumber
 {
-	return ccp( - pageNumber * (self.contentSize.width - self.pagesWidthOffset), 0.0f );
+//    if (pageNumber != 2) {
+//        return ccp( - pageNumber * (self.contentSize.width - self.pagesWidthOffset), 0.0f );
+//    } else {
+//        return ccp(- pageNumber * (self.contentSize.width - self.pagesWidthOffset - 40.0f), 0.0f);
+//    }
+
+    return ccp( - pageNumber * (self.contentSize.width - self.pagesWidthOffset), 0.0f );
+
 }
 
 -(void) moveToPage:(int)page
