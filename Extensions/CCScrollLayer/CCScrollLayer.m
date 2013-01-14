@@ -259,14 +259,7 @@ enum
 
 - (CGPoint) positionForPageWithNumber: (int) pageNumber
 {
-//    if (pageNumber != 2) {
-//        return ccp( - pageNumber * (self.contentSize.width - self.pagesWidthOffset), 0.0f );
-//    } else {
-//        return ccp(- pageNumber * (self.contentSize.width - self.pagesWidthOffset - 40.0f), 0.0f);
-//    }
-
     return ccp( - pageNumber * (self.contentSize.width - self.pagesWidthOffset), 0.0f );
-
 }
 
 -(void) moveToPage:(int)page
