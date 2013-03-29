@@ -76,6 +76,8 @@
 	// Whenever show or not gray/white dots under scrolling content.
 	BOOL showPagesIndicator_;
 	CGPoint pagesIndicatorPosition_;
+    BOOL pagesIndicatorShapeCircular_;
+    CGFloat pagesDistanceBetweenPoints_;
     ccColor4B pagesIndicatorSelectedColor_;
     ccColor4B pagesIndicatorNormalColor_;
 	
@@ -97,6 +99,8 @@
     
 	// Holds current margin offset
 	CGFloat marginOffset_;
+    
+    BOOL preventOverflow_;
 }
 
 @property (readwrite, assign) NSObject <CCScrollLayerDelegate> *delegate;
@@ -115,6 +119,8 @@
 
 /** Offset that can be used to let user see empty space over first or last page. */
 @property(readwrite, assign) CGFloat  marginOffset;
+
+@property(readwrite, assign) BOOL preventOverflow;
 
 /** If YES - when starting scrolling CCScrollLayer will claim touches, that are 
  * already claimed by others targetedTouchDelegates by calling CCTouchDispatcher#touchesCancelled
@@ -135,6 +141,10 @@
  * (Default value is screenWidth/2, screenHeight/4)
  */
 @property(readwrite, assign) CGPoint pagesIndicatorPosition;
+
+@property(readwrite, assign) BOOL pagesIndicatorShapeCircular;
+
+@property(readwrite, assign) CGFloat pagesIndicatorDistanceBetweenPoints;
 
 /** Color of dot, that represents current selected page(only one dot). */
 @property(readwrite, assign) ccColor4B pagesIndicatorSelectedColor;

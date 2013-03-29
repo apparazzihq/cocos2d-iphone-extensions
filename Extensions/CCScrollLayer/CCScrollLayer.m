@@ -68,9 +68,12 @@ enum
 @synthesize minimumTouchLengthToSlide = minimumTouchLengthToSlide_;
 @synthesize minimumTouchLengthToChangePage = minimumTouchLengthToChangePage_;
 @synthesize marginOffset = marginOffset_;
+@synthesize preventOverflow = preventOverflow_;
 @synthesize currentScreen = currentScreen_;
 @synthesize showPagesIndicator = showPagesIndicator_;
 @synthesize pagesIndicatorPosition = pagesIndicatorPosition_;
+@synthesize pagesIndicatorShapeCircular = pagesIndicatorShapeCircular_;
+@synthesize pagesIndicatorDistanceBetweenPoints = pagesDistanceBetweenPoints_;
 @synthesize pagesIndicatorNormalColor = pagesIndicatorNormalColor_;
 @synthesize pagesIndicatorSelectedColor = pagesIndicatorSelectedColor_;
 @synthesize pagesWidthOffset = pagesWidthOffset_;
@@ -168,7 +171,7 @@ enum
 		// Prepare Points Array
 		CGFloat n = (CGFloat)totalScreens; //< Total points count in CGFloat.
 		CGFloat pY = self.pagesIndicatorPosition.y; //< Points y-coord in parent coord sys.
-		CGFloat d = 16.0f; //< Distance between points.
+		CGFloat d = self.pagesIndicatorDistanceBetweenPoints; //< Distance between points. (default 16.0f)
 		CGPoint points[totalScreens];	
 		for (int i=0; i < totalScreens; ++i)
 		{
@@ -205,15 +208,26 @@ enum
                      pagesIndicatorNormalColor_.b,
                      pagesIndicatorNormalColor_.a);
         
-        ccDrawPoints( points, totalScreens );
-                           
+        if (self.pagesIndicatorShapeCircular) {
+            for (int i=0; i<totalScreens; i++) {
+                ccDrawCircle(points[i], 7, CC_DEGREES_TO_RADIANS(360), 60, NO, YES);
+            }
+        } else {
+            ccDrawPoints( points, totalScreens );
+        }
+        
         // Draw White Point for Selected Page	
         DRAW_4B_FUNC(pagesIndicatorSelectedColor_.r,
                      pagesIndicatorSelectedColor_.g,
                      pagesIndicatorSelectedColor_.b,
                      pagesIndicatorSelectedColor_.a);
-        ccDrawPoint(points[currentScreen_]);
-                                               
+        
+        if (self.pagesIndicatorShapeCircular) {
+            ccDrawCircle(points[currentScreen_], 7, CC_DEGREES_TO_RADIANS(360), 60, NO, YES);
+        } else {
+            ccDrawPoint(points[currentScreen_]);
+        }
+        
         // Restore GL Values
 #if COCOS2D_VERSION >= 0x00020000
         ccPointSize(1.0f);
@@ -437,13 +451,19 @@ enum
 	if (state_ == kCCScrollLayerStateSliding)
 	{
 		CGFloat desiredX = (- currentScreen_ * (self.contentSize.width - self.pagesWidthOffset)) + touchPoint.x - startSwipe_;
-		int page = [self pageNumberForPosition:ccp(desiredX, 0)];
-		CGFloat offset = desiredX - [self positionForPageWithNumber:page].x; 
-		if ((page == 0 && offset > 0) || (page == [layers_ count] - 1 && offset < 0))
-			offset -= marginOffset_ * offset / [[CCDirector sharedDirector] winSize].width;
-		else
-			offset = 0;
-		self.position = ccp(desiredX - offset, 0);
+
+        CGFloat minDesiredX = -1.0 * (layers_.count-1)*[[CCDirector sharedDirector] winSize].width;
+        
+        if (!preventOverflow_ || (desiredX < 0 && desiredX > minDesiredX)) {
+                int page = [self pageNumberForPosition:ccp(desiredX, 0)];
+                CGFloat offset = desiredX - [self positionForPageWithNumber:page].x;
+
+                if ((page == 0 && offset > 0) || (page == [layers_ count] - 1 && offset < 0))
+                    offset -= marginOffset_ * offset / [[CCDirector sharedDirector] winSize].width;
+                else
+                    offset = 0;
+                self.position = ccp(desiredX - offset, 0);
+        }
 	}
 }
 
