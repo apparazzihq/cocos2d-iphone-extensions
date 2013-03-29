@@ -210,7 +210,7 @@ enum
         
         if (self.pagesIndicatorShapeCircular) {
             for (int i=0; i<totalScreens; i++) {
-                ccDrawCircle(points[i], 7, CC_DEGREES_TO_RADIANS(360), 60, NO, YES);
+                ccDrawCircleFilled(points[i], 7, CC_DEGREES_TO_RADIANS(360), 60, NO);
             }
         } else {
             ccDrawPoints( points, totalScreens );
@@ -223,7 +223,7 @@ enum
                      pagesIndicatorSelectedColor_.a);
         
         if (self.pagesIndicatorShapeCircular) {
-            ccDrawCircle(points[currentScreen_], 7, CC_DEGREES_TO_RADIANS(360), 60, NO, YES);
+            ccDrawCircleFilled(points[currentScreen_], 7, CC_DEGREES_TO_RADIANS(360), 60, NO);
         } else {
             ccDrawPoint(points[currentScreen_]);
         }
